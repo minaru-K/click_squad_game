@@ -3,7 +3,8 @@ let score = 0
 const colors = ['black', 'green', 'yellow', 'pink', 'grey', 'red']
 startButton.addEventListener('click', startGame)
 const timeGame = document.getElementById('time')
-
+const resultTable = document.getElementById('result_table')
+let results = []
 
 function showClass(el){
     return el.classList.remove('hide')
@@ -30,7 +31,7 @@ function startGame(){
     showClass(document.getElementById('time-header'))
     hideClass(document.getElementById('result-header'))
     saveValue();
-    startButton.classList.add('hide')
+    hideClass(startButton)
     document.getElementById('game').style.backgroundColor = '#fff'
     generateSquad();
     let interval = setInterval(function() {
@@ -50,10 +51,12 @@ function endGame(){
     document.getElementById('game-time').removeAttribute('disabled')
     document.getElementById('game').innerHTML = ''
     document.getElementById('game').style.backgroundColor = '#ccc'
-    startButton.classList.remove('hide')
+    showClass(startButton)
     hideClass(document.getElementById('time-header'))
     showClass(document.getElementById('result-header'))
     document.getElementById('result').innerText = score
+    results.push(score/document.getElementById('time').value)
+    resultTable.innerHTML = `<p>Лучший результат за секунду:<br>Нажатий за секунду - ${countResultTable()}</p>`
 }
 
 function generateSquad(){
@@ -74,8 +77,17 @@ function generateSquad(){
 
 document.getElementById('game').addEventListener('click', checkClick)
 
+function countResultTable() {
+    max = results[0]
+    for (let i = 0; i <= results.length-1; i++) {
+        if (results[i] >= max){
+            max = results[i]
+        }
+    }
+    return max
+}
+
 function checkClick(event){
-    console.log(event.target.parentElement.classList[0])
     if (event.target.parentElement.classList[0] === 'game'){
         score++
         generateSquad()
